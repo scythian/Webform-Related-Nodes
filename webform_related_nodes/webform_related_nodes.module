@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Code for the Webform Related Nodes module.
+ */
+
+/**
+ * Implements hook_webform_component_info().
+ */
+function webform_related_nodes_webform_component_info() {
+  $components = array();
+  $components['related_nodes'] = array(
+    'label' => t('Related Nodes'),
+    'description' => t('Allows creation of checkboxes, radio buttons, or select menus with dynamic options list.'),
+    'file' => 'components/related_nodes.inc',
+  );
+  return $components;
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function webform_related_nodes_views_data_alter(&$data) {
+  // Related Nodes field.
+  $data['webform_submissions']['related_node_field'] = array(
+    'title' => t('Related node field.'),
+    'help' => t('Provide a related nodes field rendering.'),
+    'real field' => 'sid',
+    'group' => t('Webform submission data'),
+    'field' => array(
+      'handler' => 'views_handler_related_nodes',
+      'click sortable' => FALSE,
+      'webform_expand' => FALSE,
+    ),
+  );
+}

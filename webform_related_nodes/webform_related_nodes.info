@@ -1,0 +1,8 @@
+name = Webform Related Nodes
+description = Provide related nodes functionality
+core = 7.x
+package = Webform
+
+dependencies[] = webform
+
+files[] = views/views_handler_related_nodes.inc
