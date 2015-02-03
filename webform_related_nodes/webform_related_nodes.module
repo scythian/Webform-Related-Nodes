@@ -34,4 +34,44 @@ function webform_related_nodes_views_data_alter(&$data) {
       'webform_expand' => FALSE,
     ),
   );
+
+  // Submission count (node).
+  $data['node']['related_nodes_count'] = array(
+    'group' => t('Webform'),
+    'field' => array(
+      'title' => t('Count submission for related node.'),
+      'help' => t('The number of webform submissions for node.'),
+      'handler' => 'views_handler_related_nodes_count',
+      'count_type' => 'node',
+    ),
+  );
+
+}
+
+/**
+ * Get list of related components defined for webform.
+ *
+ * @param int $webform_nid
+ *   Webform ID.
+ *
+ * @return \DatabaseStatementInterface|null
+ *   Related components result list.
+ */
+function _webform_related_nodes_get_related_components($webform_nid) {
+  $result = new stdClass();
+
+  if (!empty($webform_nid)) {
+    $query = db_select('webform_component', 'w');
+    $query->fields('w', array(
+      'cid',
+      'name',
+      'extra',
+    ));
+    $query->condition('w.type', 'related_nodes');
+    $query->condition('w.nid', $webform_nid);
+    $query->orderBy('w.name', 'ASC');
+    $result = $query->execute();
+  }
+
+  return $result;
 }

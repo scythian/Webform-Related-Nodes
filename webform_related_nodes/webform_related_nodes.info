@@ -6,3 +6,4 @@ package = Webform
 dependencies[] = webform
 
 files[] = views/views_handler_related_nodes.inc
+files[] = views/views_handler_related_nodes_count.inc

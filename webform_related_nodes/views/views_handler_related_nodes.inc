@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Views handler to display data value of a webform submission component.
+ * Views handler to display related node fields.
  */
 
 /**
@@ -77,20 +77,11 @@ class views_handler_related_nodes extends views_handler_field {
       '#executes_submit_callback' => TRUE,
     );
 
-    // Detect related component for selected above webform.
-    $query = db_select('webform_component', 'w');
-    $query->fields('w', array(
-      'cid',
-      'name',
-      'extra',
-    ));
-    $query->condition('w.type', 'related_nodes');
-    $query->condition('w.nid', $webform_nid);
-    $query->orderBy('w.name', 'ASC');
-    $result = $query->execute();
-
+    // Detect related components for selected above webform.
+    $components = _webform_related_nodes_get_related_components($webform_nid);
     $content_types = array();
-    foreach ($result as $row) {
+    $related_nodes_options = array();
+    foreach ($components as $row) {
       $extra = unserialize($row->extra);
       $content_types = array_merge($content_types, array_filter($extra['content_types']));
       $related_nodes_options[$row->cid] = $row->name;
@@ -115,7 +106,6 @@ class views_handler_related_nodes extends views_handler_field {
       '#default_value' => $this->options['webform_related_cp_fields'],
       '#description' => t('Select field to display.'),
     );
-
   }
 
   /**
@@ -177,7 +167,7 @@ class views_handler_related_nodes extends views_handler_field {
    * @param array $form_state
    *   The form state array.
    */
-  function options_validate(&$form, &$form_state) {
+  public function options_validate(&$form, &$form_state) {
     parent::options_validate($form, $form_state);
     _webform_views_options_validate($form, $form_state);
   }
@@ -190,7 +180,7 @@ class views_handler_related_nodes extends views_handler_field {
    * @param array $form_state
    *   The form state array.
    */
-  function options_submit(&$form, &$form_state) {
+  public function options_submit(&$form, &$form_state) {
     parent::options_submit($form, $form_state);
     _webform_views_options_submit($form, $form_state);
   }
